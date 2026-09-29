@@ -2,165 +2,177 @@ import { useState } from "react"
 import ListaLibros from "./components/ListaLibros.jsx"
 import Reservar from "./components/Reservar.jsx"
 import Admin from "./components/Admin.jsx"
+import Footer from "./components/Footer.jsx"
+import Header from "./components/Header.jsx"
 
 function App() {
 
-    const [pagina, setPagina] = useState("lista")
-    const [libroSeleccionado, setLibroSeleccionado] = useState(null)
+  const [pagina, setPagina] = useState("lista")
+  const [libroSeleccionado, setLibroSeleccionado] = useState(null)
 
-    const [libros, setLibros] = useState([
-        {
-            id: 1,
-            titulo: "Cien años de soledad",
-            autor: "Gabriel García Márquez",
-            reservado: false,
-            reservadoPor: ""
-        },
-        {
-            id: 2,
-            titulo: "El principito",
-            autor: "Antoine de Saint-Exupéry",
-            reservado: false,
-            reservadoPor: ""
+  const [libros, setLibros] = useState([
+    {
+      id: 1,
+      titulo: "Cien años de soledad",
+      autor: "Gabriel García Márquez",
+      reservado: false,
+      reservadoPor: ""
+    },
+    {
+      id: 2,
+      titulo: "El principito",
+      autor: "Antoine de Saint-Exupéry",
+      reservado: false,
+      reservadoPor: ""
+    }
+  ])
+
+  const seleccionarLibro = (libro) => {
+    setLibroSeleccionado(libro)
+    setPagina("reservar")
+  }
+
+  const reservarLibro = (id, nombre) => {
+
+    const nuevos = libros.map(libro => {
+
+      if (libro.id === id) {
+        return {
+          ...libro,
+          reservado: true,
+          reservadoPor: nombre
         }
-    ])
+      }
 
-    const seleccionarLibro = (libro) => {
-        setLibroSeleccionado(libro)
-        setPagina("reservar")
+      return libro
+
+    })
+
+    setLibros(nuevos)
+    setPagina("lista")
+  }
+
+  const agregarLibro = (titulo, autor) => {
+
+    const nuevo = {
+      id: Date.now(),
+      titulo,
+      autor,
+      reservado: false,
+      reservadoPor: ""
     }
 
-    const reservarLibro = (id, nombre) => {
+    setLibros([...libros, nuevo])
+  }
 
-        const nuevos = libros.map(libro => {
+  const eliminarLibro = (id) => {
+    setLibros(libros.filter(libro => libro.id !== id))
+  }
 
-            if (libro.id === id) {
-                return {
-                    ...libro,
-                    reservado: true,
-                    reservadoPor: nombre
-                }
-            }
+  const eliminarReserva = (id) => {
 
-            return libro
+    const nuevos = libros.map(libro => {
 
-        })
-
-        setLibros(nuevos)
-        setPagina("lista")
-    }
-
-    const agregarLibro = (titulo, autor) => {
-
-        const nuevo = {
-            id: Date.now(),
-            titulo,
-            autor,
-            reservado: false,
-            reservadoPor: ""
+      if (libro.id === id) {
+        return {
+          ...libro,
+          reservado: false,
+          reservadoPor: ""
         }
+      }
 
-        setLibros([...libros, nuevo])
-    }
+      return libro
 
-    const eliminarLibro = (id) => {
-        setLibros(libros.filter(libro => libro.id !== id))
-    }
+    })
 
-    const eliminarReserva = (id) => {
+    setLibros(nuevos)
+  }
 
-        const nuevos = libros.map(libro => {
+  const editarLibro = (id, titulo, autor) => {
 
-            if (libro.id === id) {
-                return {
-                    ...libro,
-                    reservado: false,
-                    reservadoPor: ""
-                }
-            }
+    const nuevos = libros.map(libro => {
 
-            return libro
+      if (libro.id === id) {
+        return {
+          ...libro,
+          titulo,
+          autor
+        }
+      }
 
-        })
+      return libro
 
-        setLibros(nuevos)
-    }
+    })
 
-    const editarLibro = (id, titulo, autor) => {
+    setLibros(nuevos)
+  }
 
-        const nuevos = libros.map(libro => {
+  return (
 
-            if (libro.id === id) {
-                return {
-                    ...libro,
-                    titulo,
-                    autor
-                }
-            }
+    <div className="d-flex flex-column min-vh-100">
 
-            return libro
+      <Header />
 
-        })
+      <main className="container flex-grow-1 mt-4">
 
-        setLibros(nuevos)
-    }
+        <nav className="mb-4">
 
-    return (
+          <button
+            className="btn btn-primary me-2"
+            onClick={() => setPagina("lista")}
+          >
+            Inicio
+          </button>
 
-        <div className="container mt-4">
+          <button
+            className="btn btn-dark"
+            onClick={() => setPagina("admin")}
+          >
+            Admin
+          </button>
 
-            <nav className="mb-4">
+        </nav>
 
-                <button
-                    className="btn btn-primary me-2"
-                    onClick={() => setPagina("lista")}
-                >
-                    Inicio
-                </button>
+        {pagina === "lista" && (
 
-                <button
-                    className="btn btn-dark"
-                    onClick={() => setPagina("admin")}
-                >
-                    Admin
-                </button>
+          <ListaLibros
+            libros={libros}
+            seleccionarLibro={seleccionarLibro}
+          />
 
-            </nav>
+        )}
 
-            {pagina === "lista" && (
+        {pagina === "reservar" && libroSeleccionado && (
 
-                <ListaLibros
-                    libros={libros}
-                    seleccionarLibro={seleccionarLibro}
-                />
+          <Reservar
+            libro={libroSeleccionado}
+            reservar={reservarLibro}
+            volver={() => setPagina("lista")}
+          />
 
-            )}
+        )}
 
-            {pagina === "reservar" && libroSeleccionado && (
+        {pagina === "admin" && (
 
-                <Reservar
-                    libro={libroSeleccionado}
-                    reservar={reservarLibro}
-                    volver={() => setPagina("lista")}
-                />
+          <Admin
+            libros={libros}
+            agregarLibro={agregarLibro}
+            eliminarLibro={eliminarLibro}
+            eliminarReserva={eliminarReserva}
+            editarLibro={editarLibro}
+          />
 
-            )}
+        )}
 
-            {pagina === "admin" && (
+      </main>
+        
+      <Footer></Footer>
+    
+    </div>
 
-                <Admin
-                    libros={libros}
-                    agregarLibro={agregarLibro}
-                    eliminarLibro={eliminarLibro}
-                    eliminarReserva={eliminarReserva}
-                    editarLibro={editarLibro}
-                />
 
-            )}
 
-        </div>
-
-    )
+  )
 
 }
 
