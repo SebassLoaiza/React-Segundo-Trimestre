@@ -4,60 +4,48 @@ function Reservar({ libro, reservar, volver }) {
 
     const [nombre, setNombre] = useState("")
 
+    const enviar = (e) => {
+
+        e.preventDefault()
+
+        if (nombre.trim() === "") return
+
+        reservar(libro.id, nombre)
+
+    }
+
     return (
 
-        <div className="row justify-content-center">
+        <div>
 
-            <div className="col-md-6">
+            <h2>Reservar libro</h2>
 
-                <div className="card">
+            <p>
+                <strong>{libro.titulo}</strong> - {libro.autor}
+            </p>
 
-                    <div className="card-body">
+            <form onSubmit={enviar} className="mt-3">
 
-                        <h2>Reservar libro</h2>
+                <input
+                    className="form-control mb-3"
+                    placeholder="Tu nombre"
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
+                />
 
-                        <h4 className="text-muted mb-3">
-                            {libro.titulo}
-                        </h4>
+                <button className="btn btn-success me-2">
+                    Reservar
+                </button>
 
-                        <div className="mb-3">
+                <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={volver}
+                >
+                    Volver
+                </button>
 
-                            <label className="form-label">
-                                Tu nombre
-                            </label>
-
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={nombre}
-                                onChange={(e) => setNombre(e.target.value)}
-                            />
-
-                        </div>
-
-                        <button
-                            className="btn btn-success"
-                            onClick={() => reservar(libro.id, nombre)}
-                        >
-
-                            Reservar
-
-                        </button>
-
-                        <button
-                            className="btn btn-secondary ms-2"
-                            onClick={volver}
-                        >
-
-                            Volver
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
+            </form>
 
         </div>
 

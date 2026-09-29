@@ -1,55 +1,62 @@
-function ListaLibros({ libros, irReservar }) {
+function ListaLibros({ libros, seleccionarLibro }) {
 
     return (
 
         <div>
+            <h1>Biblioteca - Sebastian</h1>
+            <h2>Lista de libros</h2>
 
-            <h1 className="mb-4">Biblioteca</h1>
+            <table className="table">
 
-            <div className="row">
+                <thead>
 
-                {libros.map(libro => (
+                    <tr>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Estado</th>
+                        <th></th>
+                    </tr>
 
-                    <div className="col-md-4 mb-4" key={libro.id}>
+                </thead>
 
-                        <div className="card">
+                <tbody>
 
-                            <div className="card-body">
+                    {libros.map(libro => (
 
-                                <h4>{libro.titulo}</h4>
+                        <tr key={libro.id}>
 
-                                <p className="text-muted">
-                                    {libro.autor}
-                                </p>
+                            <td>{libro.titulo}</td>
 
-                                {libro.reservado ? (
+                            <td>{libro.autor}</td>
 
-                                    <p className="text-danger">
-                                        Libro reservado
-                                    </p>
+                            <td>
+                                {libro.reservado
+                                    ? `Reservado por: ${libro.reservadoPor}`
+                                    : "Disponible"}
+                            </td>
 
-                                ) : (
+                            <td>
+
+                                {!libro.reservado && (
 
                                     <button
-                                        className="btn btn-primary"
-                                        onClick={() => irReservar(libro)}
+                                        className="btn btn-success btn-sm"
+                                        onClick={() => seleccionarLibro(libro)}
                                     >
-
-                                        Reservar libro
-
+                                        Reservar
                                     </button>
 
                                 )}
 
-                            </div>
+                            </td>
 
-                        </div>
+                        </tr>
 
-                    </div>
+                    ))}
 
-                ))}
+                </tbody>
 
-            </div>
+            </table>
 
         </div>
 
